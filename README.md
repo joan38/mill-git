@@ -1,4 +1,4 @@
-# Mill Git
+# mill-git
 
 [![Latest version](https://index.scala-lang.org/joan38/mill-git/mill-git/latest.svg?color=lightgrey)](https://index.scala-lang.org/joan38/mill-git/mill-git)
 

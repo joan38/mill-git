@@ -1,21 +1,18 @@
 package com.goyeau.mill.git
 
 import mill._
+import mill.define.{Discover, ExternalModule}
 import os.{CommandResult, Pipe}
 import scala.util.Try
 
-trait GitVersionedModule extends Module {
-
-  /**
-    * Length of the git hash.
-    */
-  def hashLength: T[Int] = 7
+object GitVersionModule extends ExternalModule {
+  private val hashLength = 7
 
   /**
     * Version derived from git.
     */
-  def gitVersion: T[String] = T.input {
-    os.proc("git", "describe", "--tags", "--match=v[0-9]*", "--always", s"--abbrev=${hashLength()}", "--dirty")
+  def version: T[String] = T.input {
+    os.proc("git", "describe", "--tags", "--match=v[0-9]*", "--always", s"--abbrev=$hashLength", "--dirty")
       .call(check = false, stderr = Pipe) match {
       case result @ CommandResult(0, _) =>
         val taggedRegex   = """v(\d.*?)(?:-(\d+)-g([\da-f]+))?(-dirty)?""".r
@@ -44,6 +41,8 @@ trait GitVersionedModule extends Module {
     Try(os.copy(os.pwd / ".git" / "index", indexCopy, replaceExisting = true, createFolders = true))
     val indexFileEnv = Map("GIT_INDEX_FILE" -> indexCopy.toString)
     os.proc("git", "add", "--all").call(env = indexFileEnv)
-    os.proc("git", "write-tree").call(env = indexFileEnv).out.trim().take(1 + hashLength())
+    os.proc("git", "write-tree").call(env = indexFileEnv).out.trim().take(hashLength)
   }
+
+  override lazy val millDiscover: Discover[this.type] = Discover[this.type]
 }
