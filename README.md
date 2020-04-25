@@ -8,7 +8,7 @@ A git version plugin for Mill build tool.
 ## Requirements
 
  * [Mill](https://www.lihaoyi.com/mill)
- * A initialized git project (`git init`)
+ * An initialized git project (`git init`)
 
 
 ## Usage
@@ -26,8 +26,8 @@ object `jvm-project` extends JavaModule with GitVersionedPublishModule
 ```shell script
 > mill show jvm-project.publishVersion
 [1/1] show 
-[2/2] jvm-project.gitVersion 
-"0.0.0-123-303eee40"
+[2/2] com.goyeau.mill.git.GitVersionModule.version 
+"0.0.0-470-6d0b3d9"
 ```
 
 ### With DockerModule
@@ -47,9 +47,9 @@ object `docker-project` extends JavaModule with GitTaggedDockerModule {
 ```shell script
 > mill show docker-project.docker.tags
 [1/1] show 
-[4/6] docker-project.gitVersion 
+[6/6] docker-project.docker.tags 
 [
-    "docker-project:0.0.0-123-303eee40",
+    "docker-project:0.0.0-470-6d0b3d9",
     "docker-project:latest"
 ]
 ```
@@ -58,18 +58,18 @@ object `docker-project` extends JavaModule with GitTaggedDockerModule {
 
 ```scala
 import $ivy.`com.goyeau::mill-git:<latest version>`
-import com.goyeau.mill.git.GitVersionedModule
+import com.goyeau.mill.git.GitVersionModule
 
-object `job-project` extends JavaModule with GitVersionedModule {
-  def jobVersion = gitVersion
+object `job-project` extends JavaModule {
+  def jobVersion = GitVersionModule.version
 }
 ```
 
 ```shell script
 > mill show job-project.jobVersion
 [1/1] show 
-[2/2] job-project.gitVersion 
-"0.0.0-123-303eee40"
+[2/2] com.goyeau.mill.git.GitVersionModule.version 
+"0.0.0-470-6d0b3d9"
 ```
 
 
