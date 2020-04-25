@@ -81,9 +81,9 @@ object `job-project` extends JavaModule with GitVersionedModule {
 | v1.0.0 | 0            | c85ec8a   | true                | 303eee4          | 1.0.0-1-303eee4   |
 | v1.0.0 | 123          | c85ec8a   | false               |                  | 1.0.0-123-c85ec8a |
 | v1.0.0 | 123          | c85ec8a   | true                | 303eee4          | 1.0.0-124-303eee4 |
-| none   | 123          | c85ec8a   | false               |                  | c85ec8a           |
-| none   | 123          | c85ec8a   | true                | 303eee4          | 303eee4           |
-| none   | none         | none      |                     | 303eee4          | 303eee4           |
+| none   |              | c85ec8a   | false               |                  | c85ec8a           |
+| none   |              | c85ec8a   | true                | 303eee4          | 303eee4           |
+| none   |              | none      | true                | 303eee4          | 303eee4           |
 
 Note that we are generating a git hash for the uncommitted changes even if they have not been committed.
  
