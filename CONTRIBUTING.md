@@ -6,7 +6,7 @@ Contributions are more than welcome!
 ## Compiling
 
 ```
-mill _.compile
+./mill _.compile
 ```
 
 
@@ -14,9 +14,9 @@ mill _.compile
 
 Checking:
 ```
-mill _.formatCheck
+./mill _.formatCheck
 ```
 Applying:
 ```
-mill _.reformat
+./mill _.reformat
 ```

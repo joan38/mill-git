@@ -19,8 +19,19 @@ A git version plugin for Mill build tool.
 ```scala
 import $ivy.`com.goyeau::mill-git:<latest version>`
 import com.goyeau.mill.git.GitVersionedPublishModule
+import mill.scalalib.JavaModule
+import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
 
-object `jvm-project` extends JavaModule with GitVersionedPublishModule
+object `jvm-project` extends JavaModule with GitVersionedPublishModule {
+  override def pomSettings = PomSettings(
+    description = "JVM Project",
+    organization = "com.goyeau",
+    url = "https://github.com/joan38/mill-git",
+    licenses = Seq(License.MIT),
+    versionControl = VersionControl.github("joan38", "mill-git"),
+    developers = Seq(Developer("joan38", "Joan Goyeau", "https://github.com/joan38"))
+  )
+}
 ```
 
 ```shell script
@@ -36,6 +47,7 @@ object `jvm-project` extends JavaModule with GitVersionedPublishModule
 ```scala
 import $ivy.`com.goyeau::mill-git:<latest version>`
 import com.goyeau.mill.git.GitTaggedDockerModule
+import mill.scalalib.JavaModule
 
 object `docker-project` extends JavaModule with GitTaggedDockerModule {
   object docker extends DockerConfig with GitTaggedDocker {
@@ -59,6 +71,7 @@ object `docker-project` extends JavaModule with GitTaggedDockerModule {
 ```scala
 import $ivy.`com.goyeau::mill-git:<latest version>`
 import com.goyeau.mill.git.GitVersionModule
+import mill.scalalib.JavaModule
 
 object `job-project` extends JavaModule {
   def jobVersion = GitVersionModule.version
@@ -85,12 +98,12 @@ object `job-project` extends JavaModule {
 | none   |              | c85ec8a   | true                | 303eee4          | 303eee4           |
 | none   |              | none      | true                | 303eee4          | 303eee4           |
 
-Note that we are generating a git hash for the uncommitted changes even if they have not been committed.
+Note that we are generating a git hash for the uncommitted changes (even if they are not committed yet).
  
 
 ## Related projects
 
-* Inspired from [sbt-dynver](https://github.com/dwijnand/sbt-dynver)
+* Inspired by [sbt-dynver](https://github.com/dwijnand/sbt-dynver)
 * [sbt-git](https://github.com/sbt/sbt-git)
 
 
