@@ -18,6 +18,9 @@ object `mill-git` extends ScalaModule with TpolecatModule with ScalafmtModule wi
     ivy"com.lihaoyi::mill-main:$millVersion",
     ivy"com.lihaoyi::mill-contrib-docker:$millVersion"
   )
+  override def ivyDeps = Agg(
+    ivy"org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r"
+  )
 
   def pomSettings = PomSettings(
     description = artifactName(),
@@ -33,16 +36,15 @@ object itest extends MillIntegrationTestModule {
   def millTestVersion  = "0.6.2"
   def pluginsUnderTest = Seq(`mill-git`)
   override def testInvocations =
-    testCases().map(
+    testCases().take(1).map(
       _ -> Seq(
-        TestInvocation.Targets(Seq("all", "setupUncommittedChanges", "uncommittedChanges", "cleanUncommittedChanges")),
-        TestInvocation.Targets(Seq("all", "setupCommitNoTag", "commitNoTag", "cleanCommitNoTag")),
-        TestInvocation.Targets(Seq("all", "setupCommitNoTag", "commitNoTag", "cleanCommitNoTag")),
-        TestInvocation.Targets(Seq("all", "setupHeadTagged", "headTagged", "cleanHeadTagged")),
-        TestInvocation.Targets(
-          Seq("all", "setupUncommittedChangesAfterTag", "uncommittedChangesAfterTag", "cleanUncommittedChangesAfterTag")
-        ),
-        TestInvocation.Targets(Seq("all", "setupCommitAfterTag", "commitAfterTag", "cleanCommitAfterTag"))
+        TestInvocation.Targets(Seq("uncommittedChanges")),
+        TestInvocation.Targets(Seq("commitWithoutTag")),
+        TestInvocation.Targets(Seq("uncommittedChangesAfterCommitWithoutTag")),
+        TestInvocation.Targets(Seq("headTagged")),
+        TestInvocation.Targets(Seq("uncommittedChangesAfterTag")),
+        TestInvocation.Targets(Seq("commitAfterTag")),
+        TestInvocation.Targets(Seq("uncommittedChangesAfterTagAndCommit"))
       )
     )
 }
