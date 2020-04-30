@@ -34,6 +34,8 @@ def uncommittedChanges() = T.command {
     proc("git", "commit", "-m", "Some commit").call()
   }
 def commitWithoutTag() = T.command {
+    setupCommitWithoutTag()
+
     val hash = proc("git", "rev-parse", "HEAD").call().out.trim().take(7)
     val tags = project.docker.tags()
     assert(tags.size == 2)
@@ -54,7 +56,6 @@ def uncommittedChangesAfterCommitWithoutTag() = T.command {
     setupUncommittedChangesAfterCommitWithoutTag()
 
     val tags = project.docker.tags()
-//  throw new Exception(tags)
     assert(tags.size == 2)
     assert("""project:[\da-f]{7}""".r.findFirstIn(tags(0)).isDefined)
     val hash = proc("git", "rev-parse", "HEAD").call().out.trim().take(7)
@@ -106,7 +107,7 @@ def uncommittedChangesAfterTag() = T.command {
   }
 
 // Commit after tag
-  def setupCommitAfterTag() = T.input {
+  def setupCommitAfterTag = T.input {
     proc("git", "init").call()
     proc("git", "add", "--all").call()
     proc("git", "commit", "-m", "Some commit").call()

@@ -36,7 +36,7 @@ object itest extends MillIntegrationTestModule {
   def millTestVersion  = "0.6.2"
   def pluginsUnderTest = Seq(`mill-git`)
   override def testInvocations =
-    testCases().take(1).map(
+    testCases().map(
       _ -> Seq(
         TestInvocation.Targets(Seq("uncommittedChanges")),
         TestInvocation.Targets(Seq("commitWithoutTag")),
