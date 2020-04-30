@@ -6,7 +6,7 @@ Contributions are more than welcome!
 ## Compiling
 
 ```
-./mill _.compile
+./mill __.compile
 ```
 
 
@@ -14,9 +14,9 @@ Contributions are more than welcome!
 
 Checking:
 ```
-./mill _.formatCheck
+./mill __.formatCheck
 ```
 Applying:
 ```
-./mill _.reformat
+./mill __.reformat
 ```
