@@ -1,4 +1,4 @@
-import $ivy.`com.goyeau::mill-git:f90dd3f`
+import $ivy.`com.goyeau::mill-git:203db15`
 import $ivy.`com.lihaoyi::mill-contrib-bsp:$MILL_VERSION`
 import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest:0.2.1`
 import $ivy.`io.github.davidgregory084::mill-tpolecat:0.1.2`
