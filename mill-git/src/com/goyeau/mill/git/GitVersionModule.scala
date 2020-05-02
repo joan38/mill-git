@@ -14,34 +14,35 @@ object GitVersionModule extends ExternalModule {
   /**
     * Version derived from git.
     */
-  def version: T[String] = T.input {
-    val git     = Git.open(new File("."))
-    val status  = git.status().call()
-    val isDirty = status.hasUncommittedChanges || !status.getUntracked.isEmpty
+  def version: T[String] =
+    T.input {
+      val git     = Git.open(new File("."))
+      val status  = git.status().call()
+      val isDirty = status.hasUncommittedChanges || !status.getUntracked.isEmpty
 
-    Try(git.describe().setTags(true).setMatch("v[0-9]*").setAlways(true).call()).fold(
-      _ => uncommittedHash(git, T.ctx.dest),
-      description => {
-        val taggedRegex   = """v(\d.*?)(?:-(\d+)-g([\da-f]+))?""".r
-        val untaggedRegex = """([\da-f]+)""".r
+      Try(git.describe().setTags(true).setMatch("v[0-9]*").setAlways(true).call()).fold(
+        _ => uncommittedHash(git, T.ctx.dest),
+        description => {
+          val taggedRegex   = """v(\d.*?)(?:-(\d+)-g([\da-f]+))?""".r
+          val untaggedRegex = """([\da-f]+)""".r
 
-        description match {
-          case taggedRegex(tag, distance, hash) =>
-            val distanceHash = Option(distance).fold {
-              if (isDirty) s"-1-${uncommittedHash(git, T.ctx.dest)}"
-              else ""
-            } { distance =>
-              if (isDirty) s"-${distance.toInt + 1}-${uncommittedHash(git, T.ctx.dest)}"
-              else s"-$distance-${hash.take(hashLength)}"
-            }
-            s"$tag$distanceHash"
-          case untaggedRegex(hash) =>
-            if (isDirty) uncommittedHash(git, T.ctx.dest)
-            else hash.take(hashLength)
+          description match {
+            case taggedRegex(tag, distance, hash) =>
+              val distanceHash = Option(distance).fold {
+                if (isDirty) s"-1-${uncommittedHash(git, T.ctx.dest)}"
+                else ""
+              } { distance =>
+                if (isDirty) s"-${distance.toInt + 1}-${uncommittedHash(git, T.ctx.dest)}"
+                else s"-$distance-${hash.take(hashLength)}"
+              }
+              s"$tag$distanceHash"
+            case untaggedRegex(hash) =>
+              if (isDirty) uncommittedHash(git, T.ctx.dest)
+              else hash.take(hashLength)
+          }
         }
-      }
-    )
-  }
+      )
+    }
 
   private def uncommittedHash(git: Git, temp: Path) = {
     val indexCopy = temp / "index"
