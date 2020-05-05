@@ -27,9 +27,10 @@ class MillGitModule(val crossScalaVersion: String)
     )
   override def ivyDeps = Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r")
 
+  override def artifactName = "mill-git"
   def pomSettings =
     PomSettings(
-      description = artifactName(),
+      description = "A git version plugin for Mill build tool",
       organization = "com.goyeau",
       url = "https://github.com/joan38/mill-git",
       licenses = Seq(License.MIT),
