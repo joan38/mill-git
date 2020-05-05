@@ -19,7 +19,7 @@ jobs:
       - name: Test
         run: |
           git config --global user.name "CI"
-          ./mill itest
+          ./mill -i itest
       - name: Publish
         if: github.ref == 'refs/heads/master' || github.event_name == 'release'
         run: |
