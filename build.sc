@@ -12,20 +12,20 @@ import mill.scalalib._
 import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
 import mill.scalalib.scalafmt.ScalafmtModule
 
-object `mill-git` extends Cross[MillGitModule]("2.13.2", "2.12.11")
+object `mill-git` extends Cross[MillGitModule](crossScalaVersions: _*)
 class MillGitModule(val crossScalaVersion: String)
     extends CrossScalaModule
     with TpolecatModule
     with ScalafmtModule
     with ScalafixModule
     with GitVersionedPublishModule {
-  def millVersion = T(if (scalaVersion().startsWith("2.13")) "0.6.2-35-7d1144" else "0.6.2")
+  lazy val millVersion = millVersionFor(crossScalaVersion)
   override def compileIvyDeps =
-    Agg(
-      ivy"com.lihaoyi::mill-main:${millVersion()}",
-      ivy"com.lihaoyi::mill-contrib-docker:${millVersion()}"
+    super.compileIvyDeps() ++ Agg(
+      ivy"com.lihaoyi::mill-main:$millVersion",
+      ivy"com.lihaoyi::mill-contrib-docker:$millVersion"
     )
-  override def ivyDeps = Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r")
+  override def ivyDeps = super.ivyDeps() ++ Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r")
 
   override def artifactName = "mill-git"
   def pomSettings =
@@ -39,9 +39,12 @@ class MillGitModule(val crossScalaVersion: String)
     )
 }
 
-object itest extends MillIntegrationTestModule {
-  def millTestVersion  = "0.6.2"
-  def pluginsUnderTest = Seq(`mill-git`("2.12.11"))
+object itest extends Cross[IntegrationTestModule](crossScalaVersions: _*)
+class IntegrationTestModule(val crossScalaVersion: String) extends MillIntegrationTestModule {
+  override def millSourcePath = super.millSourcePath / ammonite.ops.up
+
+  def millTestVersion  = millVersionFor(crossScalaVersion)
+  def pluginsUnderTest = Seq(`mill-git`(crossScalaVersion))
   override def testInvocations =
     testCases().map(
       _ -> Seq(
@@ -55,3 +58,6 @@ object itest extends MillIntegrationTestModule {
       )
     )
 }
+
+lazy val crossScalaVersions = Seq("2.13.2", "2.12.11")
+def millVersionFor(scalaVersion: String) = if (scalaVersion.startsWith("2.13")) "0.6.2-35-7d1144" else "0.6.2"
