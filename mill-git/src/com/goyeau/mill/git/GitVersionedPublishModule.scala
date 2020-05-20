@@ -4,5 +4,5 @@ import mill._
 import mill.scalalib.PublishModule
 
 trait GitVersionedPublishModule extends PublishModule {
-  def publishVersion: T[String] = GitVersionModule.version
+  def publishVersion: T[String] = GitVersionModule.version()()
 }

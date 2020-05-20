@@ -5,7 +5,7 @@ import mill.scalalib.JavaModule
 import os._
 
 object project extends JavaModule {
-  def jobVersion = GitVersionModule.version
+  def jobVersion = T(GitVersionModule.version()())
 }
 
 // Uncommitted changes

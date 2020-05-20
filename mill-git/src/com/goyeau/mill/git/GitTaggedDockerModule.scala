@@ -9,7 +9,7 @@ trait GitTaggedDockerModule extends DockerModule { outer: JavaModule =>
   trait GitTaggedDocker extends DockerConfig {
     def tagLatest: T[Boolean] = false
     override def tags: T[Seq[String]] =
-      super.tags().map(tag => s"$tag:${GitVersionModule.version()}") ++
+      super.tags().map(tag => s"$tag:${GitVersionModule.version()()}") ++
         (if (tagLatest()) super.tags().map(tag => s"$tag:latest") else Seq.empty)
   }
 }

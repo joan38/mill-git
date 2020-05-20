@@ -2,26 +2,27 @@ package com.goyeau.mill.git
 
 import java.io.File
 import mill._
-import mill.define.{Discover, ExternalModule}
+import mill.define.{Command, Discover, ExternalModule}
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.RepositoryBuilder
 import os._
 import scala.util.Try
 
 object GitVersionModule extends ExternalModule {
-  private val hashLength = 7
 
   /**
     * Version derived from git.
     */
-  def version: T[String] =
-    T.input {
-      val git     = Git.open(new File("."))
-      val status  = git.status().call()
-      val isDirty = status.hasUncommittedChanges || !status.getUntracked.isEmpty
+  def version(hashLength: Int = 7, withSnapshotSuffix: Boolean = false): Command[String] =
+    T.command {
+      val git            = Git.open(new File("."))
+      val status         = git.status().call()
+      val isDirty        = status.hasUncommittedChanges || !status.getUntracked.isEmpty
+      val snapshotSuffix = if (withSnapshotSuffix) "-SNAPSHOT" else ""
+      def uncommitted()  = s"${uncommittedHash(git, T.ctx.dest, hashLength)}$snapshotSuffix"
 
       Try(git.describe().setTags(true).setMatch("v[0-9]*").setAlways(true).call()).fold(
-        _ => uncommittedHash(git, T.ctx.dest),
+        _ => uncommitted(),
         description => {
           val taggedRegex   = """v(\d.*?)(?:-(\d+)-g([\da-f]+))?""".r
           val untaggedRegex = """([\da-f]+)""".r
@@ -29,22 +30,22 @@ object GitVersionModule extends ExternalModule {
           description match {
             case taggedRegex(tag, distance, hash) =>
               val distanceHash = Option(distance).fold {
-                if (isDirty) s"-1-${uncommittedHash(git, T.ctx.dest)}"
+                if (isDirty) s"-1-${uncommitted()}"
                 else ""
               } { distance =>
-                if (isDirty) s"-${distance.toInt + 1}-${uncommittedHash(git, T.ctx.dest)}"
-                else s"-$distance-${hash.take(hashLength)}"
+                if (isDirty) s"-${distance.toInt + 1}-${uncommitted()}"
+                else s"-$distance-${hash.take(hashLength)}$snapshotSuffix"
               }
               s"$tag$distanceHash"
             case untaggedRegex(hash) =>
-              if (isDirty) uncommittedHash(git, T.ctx.dest)
+              if (isDirty) uncommitted()
               else hash.take(hashLength)
           }
         }
       )
     }
 
-  private def uncommittedHash(git: Git, temp: Path) = {
+  private def uncommittedHash(git: Git, temp: Path, hashLength: Int) = {
     val indexCopy = temp / "index"
     Try(copy(pwd / ".git" / "index", indexCopy, replaceExisting = true, createFolders = true))
 
