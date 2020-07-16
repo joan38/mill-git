@@ -23,7 +23,7 @@ class MillGitModule(val crossScalaVersion: String)
       ivy"com.lihaoyi::mill-main:$millVersion",
       ivy"com.lihaoyi::mill-contrib-docker:$millVersion"
     )
-  override def ivyDeps = super.ivyDeps() ++ Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:5.8.0.202006091008-r")
+  override def ivyDeps = super.ivyDeps() ++ Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:5.8.1.202007141445-r")
 
   override def artifactName = "mill-git"
   def pomSettings =
