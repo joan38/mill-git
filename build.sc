@@ -1,9 +1,9 @@
-import $ivy.`com.goyeau::mill-git:0.1.0-4-9b459c6`
-import $ivy.`com.goyeau::mill-scalafix:0.1.3`
+import $ivy.`com.goyeau::mill-git:0.1.1`
+import $ivy.`com.goyeau::mill-scalafix:0.1.4`
 import $ivy.`com.lihaoyi::mill-contrib-bsp:$MILL_VERSION`
 import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest:0.3.1`
-import $ivy.`io.github.davidgregory084::mill-tpolecat:0.1.3`
-import com.goyeau.mill.git.GitVersionedPublishModule
+import $ivy.`io.github.davidgregory084::mill-tpolecat:0.1.4`
+import com.goyeau.mill.git.{GitVersionedPublishModule, GitVersionModule}
 import com.goyeau.mill.scalafix.StyleModule
 import de.tobiasroeser.mill.integrationtest._
 import io.github.davidgregory084.TpolecatModule
@@ -25,6 +25,7 @@ class MillGitModule(val crossScalaVersion: String)
     )
   override def ivyDeps = super.ivyDeps() ++ Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:5.8.1.202007141445-r")
 
+  override def publishVersion = GitVersionModule.version(withSnapshotSuffix = true)()
   override def artifactName = "mill-git"
   def pomSettings =
     PomSettings(
@@ -57,5 +58,5 @@ class IntegrationTestModule(val crossScalaVersion: String) extends MillIntegrati
     )
 }
 
-lazy val crossScalaVersions = Seq("2.13.2", "2.12.11")
-def millVersionFor(scalaVersion: String) = if (scalaVersion.startsWith("2.13")) "0.6.2-35-7d1144" else "0.6.2"
+lazy val crossScalaVersions = Seq("2.13.3", "2.12.11")
+def millVersionFor(scalaVersion: String) = if (scalaVersion.startsWith("2.13")) "0.8.0" else "0.6.3"

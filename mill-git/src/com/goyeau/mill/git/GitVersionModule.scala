@@ -19,7 +19,7 @@ object GitVersionModule extends ExternalModule {
       val status         = git.status().call()
       val isDirty        = status.hasUncommittedChanges || !status.getUntracked.isEmpty
       val snapshotSuffix = if (withSnapshotSuffix) "-SNAPSHOT" else ""
-      def uncommitted()  = s"${uncommittedHash(git, T.ctx.dest, hashLength)}$snapshotSuffix"
+      def uncommitted()  = s"${uncommittedHash(git, T.ctx().dest, hashLength)}$snapshotSuffix"
 
       Try(git.describe().setTags(true).setMatch("v[0-9]*").setAlways(true).call()).fold(
         _ => uncommitted(),
