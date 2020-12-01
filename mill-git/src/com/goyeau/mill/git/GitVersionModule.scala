@@ -10,8 +10,7 @@ import scala.util.Try
 
 object GitVersionModule extends ExternalModule {
 
-  /**
-    * Version derived from git.
+  /** Version derived from git.
     */
   def version(hashLength: Int = 7, withSnapshotSuffix: Boolean = false): Command[String] =
     T.command {
