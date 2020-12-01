@@ -3,7 +3,7 @@ import $ivy.`com.goyeau::mill-scalafix:0.1.4`
 import $ivy.`com.lihaoyi::mill-contrib-bsp:$MILL_VERSION`
 import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest:0.3.1`
 import $ivy.`io.github.davidgregory084::mill-tpolecat:0.1.4`
-import com.goyeau.mill.git.{GitVersionedPublishModule, GitVersionModule}
+import com.goyeau.mill.git.{GitVersionModule, GitVersionedPublishModule}
 import com.goyeau.mill.scalafix.StyleModule
 import de.tobiasroeser.mill.integrationtest._
 import io.github.davidgregory084.TpolecatModule
@@ -11,22 +11,19 @@ import mill._
 import mill.scalalib._
 import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
 
-object `mill-git` extends Cross[MillGitModule](crossScalaVersions: _*)
-class MillGitModule(val crossScalaVersion: String)
-    extends CrossScalaModule
-    with TpolecatModule
-    with StyleModule
-    with GitVersionedPublishModule {
-  lazy val millVersion = millVersionFor(crossScalaVersion)
+object `mill-git` extends ScalaModule with TpolecatModule with StyleModule with GitVersionedPublishModule {
+  override def scalaVersion = "2.13.3"
+
+  lazy val millVersion = "0.9.3"
   override def compileIvyDeps =
     super.compileIvyDeps() ++ Agg(
       ivy"com.lihaoyi::mill-main:$millVersion",
+      ivy"com.lihaoyi::mill-scalalib:$millVersion",
       ivy"com.lihaoyi::mill-contrib-docker:$millVersion"
     )
   override def ivyDeps = super.ivyDeps() ++ Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:5.8.1.202007141445-r")
 
   override def publishVersion = GitVersionModule.version(withSnapshotSuffix = true)()
-  override def artifactName = "mill-git"
   def pomSettings =
     PomSettings(
       description = "A git version plugin for Mill build tool",
@@ -38,12 +35,11 @@ class MillGitModule(val crossScalaVersion: String)
     )
 }
 
-object itest extends Cross[IntegrationTestModule](crossScalaVersions: _*)
-class IntegrationTestModule(val crossScalaVersion: String) extends MillIntegrationTestModule {
+object itest extends MillIntegrationTestModule {
   override def millSourcePath = super.millSourcePath / ammonite.ops.up
 
-  def millTestVersion  = millVersionFor(crossScalaVersion)
-  def pluginsUnderTest = Seq(`mill-git`(crossScalaVersion))
+  def millTestVersion  = `mill-git`.millVersion
+  def pluginsUnderTest = Seq(`mill-git`)
   override def testInvocations =
     testCases().map(
       _ -> Seq(
@@ -57,6 +53,3 @@ class IntegrationTestModule(val crossScalaVersion: String) extends MillIntegrati
       )
     )
 }
-
-lazy val crossScalaVersions = Seq("2.13.3", "2.12.11")
-def millVersionFor(scalaVersion: String) = if (scalaVersion.startsWith("2.13")) "0.8.0" else "0.6.3"
