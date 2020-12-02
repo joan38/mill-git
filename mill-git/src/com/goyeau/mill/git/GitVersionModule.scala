@@ -38,7 +38,7 @@ object GitVersionModule extends ExternalModule {
               s"$tag$distanceHash"
             case untaggedRegex(hash) =>
               if (isDirty) uncommitted()
-              else hash.take(hashLength)
+              else s"${hash.take(hashLength)}$snapshotSuffix"
           }
         }
       )
