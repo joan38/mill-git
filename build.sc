@@ -1,4 +1,4 @@
-import $ivy.`com.goyeau::mill-git:0.2.1`
+import $ivy.`com.goyeau::mill-git:0.2.2`
 import $ivy.`com.goyeau::mill-scalafix:0.2.2`
 import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest_mill0.9:0.4.0`
 import $ivy.`io.github.davidgregory084::mill-tpolecat:0.2.0`
@@ -13,7 +13,7 @@ import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
 object `mill-git` extends ScalaModule with TpolecatModule with StyleModule with GitVersionedPublishModule {
   override def scalaVersion = "2.13.5"
 
-  lazy val millVersion = "0.9.7"
+  lazy val millVersion = "0.9.8"
   override def compileIvyDeps =
     super.compileIvyDeps() ++ Agg(
       ivy"com.lihaoyi::mill-main:$millVersion",
