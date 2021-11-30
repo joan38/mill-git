@@ -19,7 +19,7 @@ object `mill-git` extends ScalaModule with TpolecatModule with StyleModule with 
     ivy"com.lihaoyi::mill-scalalib:$millVersion",
     ivy"com.lihaoyi::mill-contrib-docker:$millVersion"
   )
-  override def ivyDeps = super.ivyDeps() ++ Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r")
+  override def ivyDeps = super.ivyDeps() ++ Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:6.0.0.202111291000-r")
 
   override def publishVersion = GitVersionModule.version(withSnapshotSuffix = true)()
   def pomSettings = PomSettings(
