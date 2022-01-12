@@ -13,7 +13,7 @@ import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
 object `mill-git` extends ScalaModule with TpolecatModule with StyleModule with GitVersionedPublishModule {
   override def scalaVersion = "2.13.6"
 
-  lazy val millVersion = "0.9.10"
+  lazy val millVersion = "0.9.12"
   override def compileIvyDeps = super.compileIvyDeps() ++ Agg(
     ivy"com.lihaoyi::mill-main:$millVersion",
     ivy"com.lihaoyi::mill-scalalib:$millVersion",
