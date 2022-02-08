@@ -1,6 +1,6 @@
 # mill-git
 
-[![Latest version](https://index.scala-lang.org/joan38/mill-git/mill-git/latest.svg?color=lightgrey)](https://index.scala-lang.org/joan38/mill-git/mill-git)
+![Maven Central](https://img.shields.io/maven-central/v/com.goyeau/mill-git_mill0.10_2.13)
 
 A git version plugin for Mill build tool.
 
@@ -66,15 +66,20 @@ object `docker-project` extends JavaModule with GitTaggedDockerModule {
 ]
 ```
 
-### Custom
+### Custom options
 
+Here is a custom configuration with the default option:
+*build.sc*:
 ```scala
 import $ivy.`com.goyeau::mill-git:<latest version>`
 import com.goyeau.mill.git.GitVersionModule
 import mill.scalalib.JavaModule
 
 object `job-project` extends JavaModule {
-  def jobVersion = GitVersionModule.version
+  def jobVersion = GitVersionModule.version(
+    hashLength = 7,            // Sets the length of the commit hash to use as a version.
+    withSnapshotSuffix = false // Add the -SNAPSHOT suffix so that versions gets pushed to the snapshot sonatype.
+  )()
 }
 ```
 
