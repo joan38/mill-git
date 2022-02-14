@@ -17,7 +17,7 @@ A git version plugin for Mill build tool.
 
 *build.sc*:
 ```scala
-import $ivy.`com.goyeau::mill-git:<latest version>`
+import $ivy.`com.goyeau::mill-git::<latest version>`
 import com.goyeau.mill.git.GitVersionedPublishModule
 import mill.scalalib.JavaModule
 import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
@@ -45,7 +45,7 @@ object `jvm-project` extends JavaModule with GitVersionedPublishModule {
 
 *build.sc*:
 ```scala
-import $ivy.`com.goyeau::mill-git:<latest version>`
+import $ivy.`com.goyeau::mill-git::<latest version>`
 import com.goyeau.mill.git.GitTaggedDockerModule
 import mill.scalalib.JavaModule
 
@@ -71,7 +71,7 @@ object `docker-project` extends JavaModule with GitTaggedDockerModule {
 Here is a custom configuration with the default option:
 *build.sc*:
 ```scala
-import $ivy.`com.goyeau::mill-git:<latest version>`
+import $ivy.`com.goyeau::mill-git::<latest version>`
 import com.goyeau.mill.git.GitVersionModule
 import mill.scalalib.JavaModule
 
