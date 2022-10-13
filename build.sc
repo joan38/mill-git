@@ -28,7 +28,7 @@ class MillGitCross(millVersion: String)
     ivy"com.lihaoyi::mill-scalalib:$millVersion",
     ivy"com.lihaoyi::mill-contrib-docker:$millVersion"
   )
-  override def ivyDeps = super.ivyDeps() ++ Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:6.0.0.202111291000-r")
+  override def ivyDeps = super.ivyDeps() ++ Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:6.3.0.202209071007-r")
 
   override def publishVersion = GitVersionModule.version(withSnapshotSuffix = true)()
   def pomSettings = PomSettings(
