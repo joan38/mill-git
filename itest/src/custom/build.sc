@@ -1,4 +1,4 @@
-import $exec.plugins
+import $file.plugins
 import com.goyeau.mill.git.GitVersionModule
 import mill._
 import mill.scalalib.JavaModule
@@ -10,6 +10,8 @@ object project extends JavaModule {
 
 // Uncommitted changes
 def setupUncommittedChanges = T.input {
+  remove.all(pwd / ".git")
+
   proc("git", "init").call()
 }
 def uncommittedChanges() = T.command {
@@ -22,6 +24,8 @@ def uncommittedChanges() = T.command {
 
 // Commit without tag
 def setupCommitWithoutTag = T.input {
+  remove.all(pwd / ".git")
+
   proc("git", "init").call()
   proc("git", "add", "--all").call()
   proc("git", "commit", "-m", "Some commit").call()
@@ -37,6 +41,9 @@ def commitWithoutTag() = T.command {
 
 // Uncommitted changes after commit without tag
 def setupUncommittedChangesAfterCommitWithoutTag = T.input {
+  remove.all(pwd / ".git")
+  remove(pwd / "some-file")
+
   proc("git", "init").call()
   proc("git", "add", "--all").call()
   proc("git", "commit", "-m", "Some commit").call()
@@ -48,13 +55,12 @@ def uncommittedChangesAfterCommitWithoutTag() = T.command {
   assert("""[\da-f]{7}""".r.findFirstIn(project.jobVersion()).isDefined)
   val hash = proc("git", "rev-parse", "HEAD").call().out.trim().take(7)
   assert(!project.jobVersion().contains(hash))
-
-  remove.all(pwd / ".git")
-  remove(pwd / "some-file")
 }
 
 // Head tagged
 def setupHeadTagged = T.input {
+  remove.all(pwd / ".git")
+
   proc("git", "init").call()
   proc("git", "add", "--all").call()
   proc("git", "commit", "-m", "Some commit").call()
@@ -64,12 +70,13 @@ def headTagged() = T.command {
   setupHeadTagged()
 
   assert(project.jobVersion() == "1.0.0")
-
-  remove.all(pwd / ".git")
 }
 
 // Uncommitted changes after tag
 def setupUncommittedChangesAfterTag = T.input {
+  remove.all(pwd / ".git")
+  remove(pwd / "some-file")
+
   proc("git", "init").call()
   proc("git", "add", "--all").call()
   proc("git", "commit", "-m", "Some commit").call()
@@ -82,13 +89,13 @@ def uncommittedChangesAfterTag() = T.command {
   assert("""1\.0\.0-1-[\da-f]{7}""".r.findFirstIn(project.jobVersion()).isDefined)
   val hash = proc("git", "rev-parse", "HEAD").call().out.trim().take(7)
   assert(!project.jobVersion().contains(hash))
-
-  remove.all(pwd / ".git")
-  remove(pwd / "some-file")
 }
 
 // Commit after tag
 def setupCommitAfterTag = T.input {
+  remove.all(pwd / ".git")
+  remove(pwd / "some-file")
+
   proc("git", "init").call()
   proc("git", "add", "--all").call()
   proc("git", "commit", "-m", "Some commit").call()
@@ -102,13 +109,13 @@ def commitAfterTag() = T.command {
 
   val hash = proc("git", "rev-parse", "HEAD").call().out.trim().take(7)
   assert(project.jobVersion() == s"1.0.0-1-$hash")
-
-  remove.all(pwd / ".git")
-  remove(pwd / "some-file")
 }
 
 // Uncommitted changes after tag and after commit
 def setupUncommittedChangesAfterTagAndCommit = T.input {
+  remove.all(pwd / ".git")
+  remove(pwd / "some-file")
+
   proc("git", "init").call()
   proc("git", "add", "--all").call()
   proc("git", "commit", "-m", "Some commit").call()
@@ -124,7 +131,4 @@ def uncommittedChangesAfterTagAndCommit() = T.command {
   assert("""1\.0\.0-2-[\da-f]{7}""".r.findFirstIn(project.jobVersion()).isDefined)
   val hash = proc("git", "rev-parse", "HEAD").call().out.trim().take(7)
   assert(!project.jobVersion().contains(hash))
-
-  remove.all(pwd / ".git")
-  remove(pwd / "some-file")
 }
