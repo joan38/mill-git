@@ -11,7 +11,7 @@ import mill.scalalib._
 import mill.scalalib.api.Util.scalaNativeBinaryVersion
 import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
 
-val millVersions                           = Seq("0.10.12", "0.11.1")
+val millVersions                           = Seq("0.10.12", "0.11.9")
 def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(millVersion)
 
 object `mill-git` extends Cross[MillGitCross](millVersions: _*)
