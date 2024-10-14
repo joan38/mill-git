@@ -39,6 +39,7 @@ object GitVersionModule extends ExternalModule {
             case untaggedRegex(hash) =>
               if (isDirty) uncommitted()
               else s"${hash.take(hashLength)}$snapshotSuffix"
+            case _ => throw new IllegalStateException(s"Unexpected git describe output: $description")
           }
         }
       )
@@ -46,7 +47,7 @@ object GitVersionModule extends ExternalModule {
 
   private def uncommittedHash(git: Git, temp: Path, hashLength: Int) = {
     val indexCopy = temp / "index"
-    Try(copy(pwd / ".git" / "index", indexCopy, replaceExisting = true, createFolders = true))
+    val _ = Try(copy(pwd / ".git" / "index", indexCopy, replaceExisting = true, createFolders = true))
 
     // Use different index file to avoid messing up current git status
     val altGit = Git.wrap(

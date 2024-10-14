@@ -1,15 +1,16 @@
 import $ivy.`com.goyeau::mill-git::0.2.5`
 import $ivy.`com.goyeau::mill-scalafix::0.4.2`
 import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest::0.7.1`
-import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.5`
+import $ivy.`org.typelevel::scalac-options:0.1.7`
 import com.goyeau.mill.git.{GitVersionModule, GitVersionedPublishModule}
 import com.goyeau.mill.scalafix.StyleModule
 import de.tobiasroeser.mill.integrationtest._
-import io.github.davidgregory084.TpolecatModule
 import mill._
 import mill.scalalib._
 import mill.scalalib.api.Util.scalaNativeBinaryVersion
 import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
+import org.typelevel.scalacoptions.ScalacOptions._
+import org.typelevel.scalacoptions.{ScalaVersion, ScalacOptions}
 
 val millVersions                           = Seq("0.10.12", "0.11.1")
 def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(millVersion)
@@ -17,10 +18,13 @@ def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(millVersio
 object `mill-git` extends Cross[MillGitCross](millVersions: _*)
 class MillGitCross(millVersion: String)
     extends CrossModuleBase
-    with TpolecatModule
     with StyleModule
     with GitVersionedPublishModule {
   override def crossScalaVersion = "2.13.10"
+  override def scalacOptions = super.scalacOptions() ++ ScalacOptions.tokensForVersion(
+    ScalaVersion.unsafeFromString(scalaVersion()),
+    ScalacOptions.default + source3 ++ fatalWarningOptions
+  )
   override def artifactSuffix    = s"_mill${millBinaryVersion(millVersion)}" + super.artifactSuffix()
 
   override def compileIvyDeps = super.compileIvyDeps() ++ Agg(
