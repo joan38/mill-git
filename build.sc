@@ -16,23 +16,20 @@ val millVersions                           = Seq("0.10.12", "0.11.1")
 def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(millVersion)
 
 object `mill-git` extends Cross[MillGitCross](millVersions: _*)
-class MillGitCross(millVersion: String)
-    extends CrossModuleBase
-    with StyleModule
-    with GitVersionedPublishModule {
+class MillGitCross(millVersion: String) extends CrossModuleBase with StyleModule with GitVersionedPublishModule {
   override def crossScalaVersion = "2.13.10"
   override def scalacOptions = super.scalacOptions() ++ ScalacOptions.tokensForVersion(
     ScalaVersion.unsafeFromString(scalaVersion()),
     ScalacOptions.default + source3 ++ fatalWarningOptions
   )
-  override def artifactSuffix    = s"_mill${millBinaryVersion(millVersion)}" + super.artifactSuffix()
+  override def artifactSuffix = s"_mill${millBinaryVersion(millVersion)}" + super.artifactSuffix()
 
   override def compileIvyDeps = super.compileIvyDeps() ++ Agg(
     ivy"com.lihaoyi::mill-main:$millVersion",
     ivy"com.lihaoyi::mill-scalalib:$millVersion",
     ivy"com.lihaoyi::mill-contrib-docker:$millVersion"
   )
-  override def ivyDeps = super.ivyDeps() ++ Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:6.10.0.202406032230-r")
+  override def ivyDeps = super.ivyDeps() ++ Agg(ivy"org.eclipse.jgit:org.eclipse.jgit:7.1.0.202411261347-r")
 
   override def publishVersion = GitVersionModule.version(withSnapshotSuffix = true)()
   def pomSettings = PomSettings(
