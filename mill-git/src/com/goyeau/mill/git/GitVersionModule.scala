@@ -1,12 +1,12 @@
 package com.goyeau.mill.git
 
-import java.io.File
 import mill._
+import mill.api.Result.{Exception => MillException, OuterStack, Success => MillSuccess}
 import mill.define.{Command, Discover, ExternalModule}
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.RepositoryBuilder
 import os._
-import scala.util.Try
+import scala.util.{Failure => TryFailure, Success => TrySuccess, Try}
 
 object GitVersionModule extends ExternalModule {
 
@@ -14,15 +14,18 @@ object GitVersionModule extends ExternalModule {
     */
   def version(hashLength: Int = 7, withSnapshotSuffix: Boolean = false): Command[String] =
     T.command {
-      val git            = Git.open(new File("."))
+      val workspacePath  = T.workspace
+      val git            = Git.open(workspacePath.toIO)
       val status         = git.status().call()
       val isDirty        = status.hasUncommittedChanges || !status.getUntracked.isEmpty
       val snapshotSuffix = if (withSnapshotSuffix) "-SNAPSHOT" else ""
       def uncommitted()  = s"${uncommittedHash(git, T.ctx().dest, hashLength)}$snapshotSuffix"
 
-      Try(git.describe().setTags(true).setMatch("v[0-9]*").setAlways(true).call()).fold(
-        _ => uncommitted(),
-        description => {
+      val describeResult = Try(git.describe().setTags(true).setMatch("v[0-9]*").setAlways(true).call())
+
+      describeResult match {
+        case TryFailure(_) => MillSuccess(uncommitted())
+        case TrySuccess(description) =>
           val taggedRegex   = """v(\d.*?)(?:-(\d+)-g([\da-f]+))?""".r
           val untaggedRegex = """([\da-f]+)""".r
 
@@ -35,19 +38,20 @@ object GitVersionModule extends ExternalModule {
                 if (isDirty) s"-${distance.toInt + 1}-${uncommitted()}"
                 else s"-$distance-${hash.take(hashLength)}$snapshotSuffix"
               }
-              s"$tag$distanceHash"
+              MillSuccess(s"$tag$distanceHash")
             case untaggedRegex(hash) =>
-              if (isDirty) uncommitted()
-              else s"${hash.take(hashLength)}$snapshotSuffix"
-            case _ => throw new IllegalStateException(s"Unexpected git describe output: $description")
+              if (isDirty) MillSuccess(uncommitted())
+              else MillSuccess(s"${hash.take(hashLength)}$snapshotSuffix")
+            case _ =>
+              val exception = new IllegalStateException(s"Unexpected git describe output: $description")
+              MillException(exception, new OuterStack(exception.getStackTrace.toIndexedSeq))
           }
-        }
-      )
+      }
     }
 
-  private def uncommittedHash(git: Git, temp: Path, hashLength: Int) = {
+  private def uncommittedHash(git: Git, temp: Path, hashLength: Int): String = {
     val indexCopy = temp / "index"
-    val _ = Try(copy(pwd / ".git" / "index", indexCopy, replaceExisting = true, createFolders = true))
+    val _         = Try(copy(pwd / ".git" / "index", indexCopy, replaceExisting = true, createFolders = true))
 
     // Use different index file to avoid messing up current git status
     val altGit = Git.wrap(
@@ -61,5 +65,5 @@ object GitVersionModule extends ExternalModule {
     cache.writeTree(altGit.getRepository.newObjectInserter()).abbreviate(hashLength).name()
   }
 
-  override lazy val millDiscover: Discover[this.type] = Discover[this.type]
+  override lazy val millDiscover = Discover[this.type]
 }
