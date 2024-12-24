@@ -14,7 +14,8 @@ object GitVersionModule extends ExternalModule {
     */
   def version(hashLength: Int = 7, withSnapshotSuffix: Boolean = false): Command[String] =
     T.command {
-      val git            = Git.open(new File("."))
+      val workspacePath  = T.workspace
+      val git            = Git.open(workspacePath.toIO)
       val status         = git.status().call()
       val isDirty        = status.hasUncommittedChanges || !status.getUntracked.isEmpty
       val snapshotSuffix = if (withSnapshotSuffix) "-SNAPSHOT" else ""
@@ -45,7 +46,7 @@ object GitVersionModule extends ExternalModule {
       )
     }
 
-  private def uncommittedHash(git: Git, temp: Path, hashLength: Int) = {
+  private def uncommittedHash(git: Git, temp: Path, hashLength: Int): String = {
     val indexCopy = temp / "index"
     val _ = Try(copy(pwd / ".git" / "index", indexCopy, replaceExisting = true, createFolders = true))
 
