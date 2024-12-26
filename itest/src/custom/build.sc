@@ -10,7 +10,7 @@ object project extends JavaModule {
 
 // Uncommitted changes
 def setupUncommittedChanges = T.input {
-  remove.all(pwd / ".git")
+  remove.all(T.workspace / ".git")
 
   proc("git", "init").call(cwd = T.workspace)
 }
