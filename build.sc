@@ -7,12 +7,12 @@ import com.goyeau.mill.scalafix.StyleModule
 import de.tobiasroeser.mill.integrationtest._
 import mill._
 import mill.scalalib._
-import mill.scalalib.api.Util.scalaNativeBinaryVersion
+import mill.scalalib.api.ZincWorkerUtil.scalaNativeBinaryVersion
 import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
 import org.typelevel.scalacoptions.ScalacOptions._
 import org.typelevel.scalacoptions.{ScalaVersion, ScalacOptions}
 
-val millVersions                           = Seq("0.10.12", "0.11.1")
+val millVersions                           = Seq("0.10.12", "0.11.1", "0.12.4")
 def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(millVersion)
 
 object `mill-git` extends Cross[MillGitCross](millVersions: _*)
