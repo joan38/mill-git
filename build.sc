@@ -12,20 +12,17 @@ import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
 import org.typelevel.scalacoptions.ScalacOptions._
 import org.typelevel.scalacoptions.{ScalaVersion, ScalacOptions}
 
-val millVersions                           = Seq("0.10.12", "0.11.1", "0.12.4")
+val millVersions                           = Seq("0.10.12", "0.11.1", "0.12.5")
 def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(millVersion)
 
 object `mill-git` extends Cross[MillGitCross](millVersions: _*)
-class MillGitCross(millVersion: String)
-    extends CrossModuleBase
-    with StyleModule
-    with GitVersionedPublishModule {
+class MillGitCross(millVersion: String) extends CrossModuleBase with StyleModule with GitVersionedPublishModule {
   override def crossScalaVersion = "2.13.10"
   override def scalacOptions = super.scalacOptions() ++ ScalacOptions.tokensForVersion(
     ScalaVersion.unsafeFromString(scalaVersion()),
     ScalacOptions.default + source3 ++ fatalWarningOptions
   )
-  override def artifactSuffix    = s"_mill${millBinaryVersion(millVersion)}" + super.artifactSuffix()
+  override def artifactSuffix = s"_mill${millBinaryVersion(millVersion)}" + super.artifactSuffix()
 
   override def compileIvyDeps = super.compileIvyDeps() ++ Agg(
     ivy"com.lihaoyi::mill-main:$millVersion",
