@@ -20,7 +20,10 @@ jobs:
       - name: Checks
         run: |
           git config --global user.name "CI"
-          ./mill all __.checkStyle __.docJar __.publishLocal __.test
+          ./mill __.checkStyle
+          ./mill __.test
+          ./mill __.docJar
+          ./mill __.publishLocal
       - name: Publish
         if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v') || github.event_name == 'release'
         run: |
@@ -28,4 +31,4 @@ jobs:
           gpg --batch --yes --import private.key
           rm private.key
 
-          ./mill mill.scalalib.PublishModule/publishAll --sonatypeCreds ${{secrets.sonatype_credentials}} --publishArtifacts __.publishArtifacts --awaitTimeout 600000 --release true
+          ./mill mill.scalalib.PublishModule/publishAll --sonatypeCreds ${{secrets.sonatype_credentials}} --publishArtifacts __.publishArtifacts --release true
