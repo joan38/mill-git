@@ -3,7 +3,6 @@ package com.goyeau.mill.git
 import mill._
 import mill.contrib.docker.DockerModule
 import mill.scalalib.JavaModule
-import scala.collection.immutable.Seq
 
 trait GitTaggedDockerModule extends DockerModule { outer: JavaModule =>
   trait GitTaggedDocker extends DockerConfig {

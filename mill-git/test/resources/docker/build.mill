@@ -1,0 +1,13 @@
+import $ivy.`com.goyeau::mill-git::0.2.6`
+import $ivy.`com.lihaoyi::mill-contrib-docker:$MILL_VERSION`
+import com.goyeau.mill.git.GitTaggedDockerModule
+import mill._
+import mill.contrib.docker.DockerModule
+import mill.scalalib.JavaModule
+import os._
+
+object project extends JavaModule with GitTaggedDockerModule {
+  object docker extends DockerConfig with GitTaggedDocker {
+    override def tagLatest = true // Default is false
+  }
+}

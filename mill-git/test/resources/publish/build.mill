@@ -1,0 +1,17 @@
+import $ivy.`com.goyeau::mill-git::0.2.6`
+import com.goyeau.mill.git.GitVersionedPublishModule
+import mill._
+import mill.scalalib.JavaModule
+import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
+import os._
+
+object project extends JavaModule with GitVersionedPublishModule {
+  override def pomSettings = PomSettings(
+    description = "JVM Project",
+    organization = "com.goyeau",
+    url = "https://github.com/joan38/mill-git",
+    licenses = Seq(License.MIT),
+    versionControl = VersionControl.github("joan38", "mill-git"),
+    developers = Seq(Developer("joan38", "Joan Goyeau", "https://github.com/joan38"))
+  )
+}

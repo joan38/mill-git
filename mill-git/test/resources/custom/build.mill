@@ -1,0 +1,55 @@
+import $ivy.`com.goyeau::mill-git::0.2.6`
+import com.goyeau.mill.git.GitVersionModule
+import mill._
+import mill.scalalib.JavaModule
+import os._
+
+object project extends JavaModule {
+  def jobVersion = T(GitVersionModule.version()())
+}
+
+/** Usage
+
+> git init
+...
+
+// Uncommitted changes
+> ./mill show project.jobVersion
+"..."
+
+// Commit without tag
+> git add --all
+> git commit -m "Some commit"
+
+> ./mill show project.jobVersion
+"..."
+
+// Uncommitted changes after commit without tag
+> echo "Some change!" > some-file
+> ./mill show project.jobVersion
+"..."
+
+// Head tagged
+> git add --all
+> git commit -m "Some commit 2"
+> git tag -a v1.0.0 -m "v1.0.0"
+> ./mill show project.jobVersion
+"1.0.0"
+
+// Uncommitted changes after tag
+> echo "Some change 2!" > some-file
+> ./mill show project.jobVersion
+"1.0.0-..."
+
+// Commit after tag
+> git add --all
+> git commit -m "Some commit 3"
+> ./mill show project.jobVersion
+"1.0.0-1-..."
+
+// Uncommitted changes after tag and after commit
+> echo "Some change 3!" > some-file
+> ./mill show project.jobVersion
+"1.0.0-2-..."
+
+*/
