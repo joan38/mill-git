@@ -1,4 +1,4 @@
-import $ivy.`com.goyeau::mill-git::0.2.5`
+import $ivy.`com.goyeau::mill-git::0.2.6`
 import $ivy.`com.goyeau::mill-scalafix::0.4.2`
 import $ivy.`de.tototec::de.tobiasroeser.mill.integrationtest::0.7.1`
 import $ivy.`org.typelevel::scalac-options:0.1.7`
@@ -16,16 +16,13 @@ val millVersions                           = Seq("0.10.12", "0.11.1", "0.12.4")
 def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(millVersion)
 
 object `mill-git` extends Cross[MillGitCross](millVersions: _*)
-class MillGitCross(millVersion: String)
-    extends CrossModuleBase
-    with StyleModule
-    with GitVersionedPublishModule {
+class MillGitCross(millVersion: String) extends CrossModuleBase with StyleModule with GitVersionedPublishModule {
   override def crossScalaVersion = "2.13.10"
   override def scalacOptions = super.scalacOptions() ++ ScalacOptions.tokensForVersion(
     ScalaVersion.unsafeFromString(scalaVersion()),
     ScalacOptions.default + source3 ++ fatalWarningOptions
   )
-  override def artifactSuffix    = s"_mill${millBinaryVersion(millVersion)}" + super.artifactSuffix()
+  override def artifactSuffix = s"_mill${millBinaryVersion(millVersion)}" + super.artifactSuffix()
 
   override def compileIvyDeps = super.compileIvyDeps() ++ Agg(
     ivy"com.lihaoyi::mill-main:$millVersion",
