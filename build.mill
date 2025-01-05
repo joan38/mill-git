@@ -11,13 +11,7 @@ import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
 import org.typelevel.scalacoptions.ScalacOptions._
 import org.typelevel.scalacoptions.{ScalaVersion, ScalacOptions}
 
-val millVersions = Seq("0.12.0")
-def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(millVersion) match {
-  case "0.12"  => "0.11"
-  case version => version
-}
-
-object `mill-git` extends Cross[MillGitCross](millVersions)
+object `mill-git` extends Cross[MillGitCross]("0.12.0")
 trait MillGitCross extends Cross.Module[String] with StyleModule with GitVersionedPublishModule {
   val millVersion           = crossValue
   override def scalaVersion = "2.13.15"
@@ -62,4 +56,9 @@ trait MillGitCross extends Cross.Module[String] with StyleModule with GitVersion
     versionControl = VersionControl.github("joan38", "mill-git"),
     developers = Seq(Developer("joan38", "Joan Goyeau", "https://github.com/joan38"))
   )
+}
+
+def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(millVersion) match {
+  case "0.12"  => "0.11" // 0.12.x is binary compatible with 0.11.x
+  case version => version
 }
