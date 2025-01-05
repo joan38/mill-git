@@ -1,25 +1,25 @@
 package com.goyeau.mill.git
 
-import mill._
-import mill.api.Result.{Exception => MillException, OuterStack, Success => MillSuccess}
+import mill.*
+import mill.api.Result.{Exception as MillException, OuterStack, Success as MillSuccess}
+import mill.Task.workspace
 import mill.define.{Command, Discover, ExternalModule}
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.RepositoryBuilder
-import os._
-import scala.util.{Failure => TryFailure, Success => TrySuccess, Try}
+import os.*
+import scala.util.{Failure as TryFailure, Success as TrySuccess, Try}
 
 object GitVersionModule extends ExternalModule {
 
   /** Version derived from git.
     */
   def version(hashLength: Int = 7, withSnapshotSuffix: Boolean = false): Command[String] =
-    T.command {
-      val workspacePath  = T.workspace
-      val git            = Git.open(workspacePath.toIO)
+    Task.Command {
+      val git            = Git.open(workspace.toIO)
       val status         = git.status().call()
       val isDirty        = status.hasUncommittedChanges || !status.getUntracked.isEmpty
       val snapshotSuffix = if (withSnapshotSuffix) "-SNAPSHOT" else ""
-      def uncommitted()  = s"${uncommittedHash(git, T.ctx().dest, hashLength)}$snapshotSuffix"
+      def uncommitted()  = s"${uncommittedHash(git, hashLength)}$snapshotSuffix"
 
       val describeResult = Try(git.describe().setTags(true).setMatch("v[0-9]*").setAlways(true).call())
 
@@ -49,8 +49,8 @@ object GitVersionModule extends ExternalModule {
       }
     }
 
-  private def uncommittedHash(git: Git, temp: Path, hashLength: Int): String = {
-    val indexCopy = temp / "index"
+  private def uncommittedHash(git: Git, hashLength: Int): String = {
+    val indexCopy = os.temp.dir() / "index"
     val _         = Try(copy(pwd / ".git" / "index", indexCopy, replaceExisting = true, createFolders = true))
 
     // Use different index file to avoid messing up current git status

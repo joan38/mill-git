@@ -1,6 +1,6 @@
 # mill-git
 
-![Maven Central](https://img.shields.io/maven-central/v/com.goyeau/mill-git_mill0.10_2.13)
+![Maven Central](https://img.shields.io/maven-central/v/com.goyeau/mill-git_mill0.11_2.13)
 
 A git version plugin for Mill build tool.
 

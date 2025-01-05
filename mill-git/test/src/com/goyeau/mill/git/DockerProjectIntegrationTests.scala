@@ -7,14 +7,14 @@ class DockerProjectIntegrationTests extends FunSuite {
     val tester = Tester.create(os.rel / "docker")
     val _      = os.proc("git", "init").call(cwd = tester.workspacePath)
 
-    val res1 = tester.eval(Seq("show", "project.docker.tags"))
-    assert(res1.isSuccess, res1.err)
+    val result = tester.eval(Seq("show", "project.docker.tags"))
+    assert(result.isSuccess, result.err)
     assert(
-      res1.out.matches("""\[
+      result.out.matches("""\[
                          |  "project:[\da-f]{7}",
                          |  "project:latest"
                          |\]""".stripMargin),
-      s"${res1.out} is not an array with 7 chars hash and latest tags"
+      s"${result.out} is not an array with 7 chars hash and latest tags"
     )
   }
 
@@ -25,10 +25,10 @@ class DockerProjectIntegrationTests extends FunSuite {
     val _      = os.proc("git", "commit", "-m", "Some commit").call(cwd = tester.workspacePath)
     val hash   = os.proc("git", "rev-parse", "HEAD").call(cwd = tester.workspacePath).out.trim().take(7)
 
-    val res1 = tester.eval(Seq("show", "project.docker.tags"))
-    assert(res1.isSuccess, res1.err)
+    val result = tester.eval(Seq("show", "project.docker.tags"))
+    assert(result.isSuccess, result.err)
     assertEquals(
-      res1.out,
+      result.out,
       s"""[
          |  "project:$hash",
          |  "project:latest"
@@ -43,14 +43,14 @@ class DockerProjectIntegrationTests extends FunSuite {
     val _      = os.proc("git", "commit", "-m", "Some commit").call(cwd = tester.workspacePath)
     val _      = os.write(tester.workspacePath / "some-file", "Some change!")
 
-    val res1 = tester.eval(Seq("show", "project.docker.tags"))
-    assert(res1.isSuccess, res1.err)
+    val result = tester.eval(Seq("show", "project.docker.tags"))
+    assert(result.isSuccess, result.err)
     assert(
-      res1.out.matches("""\[
+      result.out.matches("""\[
                          |  "project:[\da-f]{7}",
                          |  "project:latest"
                          |\]""".stripMargin),
-      s"${res1.out} is not a 7 chars hash"
+      s"${result.out} is not a 7 chars hash"
     )
   }
 
@@ -61,10 +61,10 @@ class DockerProjectIntegrationTests extends FunSuite {
     val _      = os.proc("git", "commit", "-m", "Some commit").call(cwd = tester.workspacePath)
     val _      = os.proc("git", "tag", "-a", "v1.0.0", "-m", "v1.0.0").call(cwd = tester.workspacePath)
 
-    val res1 = tester.eval(Seq("show", "project.docker.tags"))
-    assert(res1.isSuccess, res1.err)
+    val result = tester.eval(Seq("show", "project.docker.tags"))
+    assert(result.isSuccess, result.err)
     assertEquals(
-      res1.out,
+      result.out,
       """[
         |  "project:1.0.0",
         |  "project:latest"
@@ -80,14 +80,14 @@ class DockerProjectIntegrationTests extends FunSuite {
     val _      = os.proc("git", "tag", "-a", "v1.0.0", "-m", "v1.0.0").call(cwd = tester.workspacePath)
     val _      = os.write(tester.workspacePath / "some-file", "Some change!")
 
-    val res1 = tester.eval(Seq("show", "project.docker.tags"))
-    assert(res1.isSuccess, res1.err)
+    val result = tester.eval(Seq("show", "project.docker.tags"))
+    assert(result.isSuccess, result.err)
     assert(
-      res1.out.matches("""\[
+      result.out.matches("""\[
                          |  "project:1\.0\.0-1-[\da-f]{7}",
                          |  "project:latest"
                          |\]""".stripMargin),
-      s"${res1.out} is not a version and distance from it, followed by a 7 chars hash"
+      s"${result.out} is not a version and distance from it, followed by a 7 chars hash"
     )
   }
 
@@ -102,10 +102,10 @@ class DockerProjectIntegrationTests extends FunSuite {
     val _      = os.proc("git", "commit", "-m", "Some commit 2").call(cwd = tester.workspacePath)
     val hash   = os.proc("git", "rev-parse", "HEAD").call(cwd = tester.workspacePath).out.trim().take(7)
 
-    val res1 = tester.eval(Seq("show", "project.docker.tags"))
-    assert(res1.isSuccess, res1.err)
+    val result = tester.eval(Seq("show", "project.docker.tags"))
+    assert(result.isSuccess, result.err)
     assertEquals(
-      res1.out,
+      result.out,
       s"""[
         |  "project:1.0.0-1-$hash",
         |  "project:latest"
@@ -124,14 +124,14 @@ class DockerProjectIntegrationTests extends FunSuite {
     val _      = os.proc("git", "commit", "-m", "Some commit 2").call(cwd = tester.workspacePath)
     val _      = os.write.append(tester.workspacePath / "some-file", "Some change 2!")
 
-    val res1 = tester.eval(Seq("show", "project.docker.tags"))
-    assert(res1.isSuccess, res1.err)
+    val result = tester.eval(Seq("show", "project.docker.tags"))
+    assert(result.isSuccess, result.err)
     assert(
-      res1.out.matches("""\[
+      result.out.matches("""\[
                          |  "project:1\.0\.0-2-[\da-f]{7}",
                          |  "project:latest"
                          |\]""".stripMargin),
-      s"${res1.out} is not a version and distance from it, followed by a 7 chars hash"
+      s"${result.out} is not a version and distance from it, followed by a 7 chars hash"
     )
   }
 }

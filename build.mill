@@ -4,6 +4,7 @@ import $ivy.`org.typelevel::scalac-options:0.1.7`
 import com.goyeau.mill.git.{GitVersionModule, GitVersionedPublishModule}
 import com.goyeau.mill.scalafix.StyleModule
 import mill._
+import mill.Task.dest
 import mill.scalalib._
 import mill.scalalib.api.ZincWorkerUtil.scalaNativeBinaryVersion
 import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
@@ -11,6 +12,10 @@ import org.typelevel.scalacoptions.ScalacOptions._
 import org.typelevel.scalacoptions.{ScalaVersion, ScalacOptions}
 
 val millVersions = Seq("0.12.0")
+def millBinaryVersion(millVersion: String) = scalaNativeBinaryVersion(millVersion) match {
+  case "0.12"  => "0.11"
+  case version => version
+}
 
 object `mill-git` extends Cross[MillGitCross](millVersions)
 trait MillGitCross extends Cross.Module[String] with StyleModule with GitVersionedPublishModule {
@@ -20,7 +25,6 @@ trait MillGitCross extends Cross.Module[String] with StyleModule with GitVersion
     ScalaVersion.unsafeFromString(scalaVersion()),
     ScalacOptions.default + source3 ++ fatalWarningOptions
   )
-  override def artifactName = s"mill-git_mill${scalaNativeBinaryVersion(millVersion)}"
 
   override def compileIvyDeps = super.compileIvyDeps() ++ Agg(
     ivy"com.lihaoyi::mill-main:$millVersion",
@@ -41,13 +45,14 @@ trait MillGitCross extends Cross.Module[String] with StyleModule with GitVersion
       override def ivyDeps   = Agg(ivy"com.lihaoyi:mill-dist:$millVersion")
       override def mainClass = Some("mill.runner.client.MillClientMain")
       override def resources = T {
-        val p = Task.dest / "mill/local-test-overrides" / s"com.lihaoyi-${MillGitCross.this.artifactId()}"
+        val p = dest / MillGitCross.this.artifactId()
         os.write(p, MillGitCross.this.localClasspath().map(_.path).mkString("\n"), createFolders = true)
-        Seq(PathRef(T.dest))
+        Seq(PathRef(dest))
       }
     }
   }
 
+  override def artifactName   = s"mill-git_mill${millBinaryVersion(millVersion)}"
   override def publishVersion = GitVersionModule.version(withSnapshotSuffix = true)()
   def pomSettings = PomSettings(
     description = "A git version plugin for Mill build tool",
