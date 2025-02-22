@@ -1,6 +1,6 @@
 package com.goyeau.mill.git
 
-import mill._
+import mill.*
 import mill.contrib.docker.DockerModule
 import mill.scalalib.JavaModule
 

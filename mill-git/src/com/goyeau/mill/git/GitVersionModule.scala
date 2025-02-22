@@ -1,13 +1,18 @@
 package com.goyeau.mill.git
 
 import mill.*
-import mill.api.Result
 import mill.Task.workspace
-import mill.define.{Command, Discover, ExternalModule}
+import mill.api.Result
+import mill.define.Command
+import mill.define.Discover
+import mill.define.ExternalModule
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.RepositoryBuilder
 import os.*
-import scala.util.{Failure as TryFailure, Success as TrySuccess, Try}
+
+import scala.util.Failure as TryFailure
+import scala.util.Success as TrySuccess
+import scala.util.Try
 
 object GitVersionModule extends ExternalModule {
 
