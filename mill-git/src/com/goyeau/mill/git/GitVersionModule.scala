@@ -1,7 +1,7 @@
 package com.goyeau.mill.git
 
 import mill.*
-import mill.api.Result.{Exception as MillException, OuterStack, Success as MillSuccess}
+import mill.api.Result
 import mill.Task.workspace
 import mill.define.{Command, Discover, ExternalModule}
 import org.eclipse.jgit.api.Git
@@ -24,7 +24,7 @@ object GitVersionModule extends ExternalModule {
       val describeResult = Try(git.describe().setTags(true).setMatch("v[0-9]*").setAlways(true).call())
 
       describeResult match {
-        case TryFailure(_) => MillSuccess(uncommitted())
+        case TryFailure(_) => Result.Success(uncommitted())
         case TrySuccess(description) =>
           val taggedRegex   = """v(\d.*?)(?:-(\d+)-g([\da-f]+))?""".r
           val untaggedRegex = """([\da-f]+)""".r
@@ -38,13 +38,11 @@ object GitVersionModule extends ExternalModule {
                 if (isDirty) s"-${distance.toInt + 1}-${uncommitted()}"
                 else s"-$distance-${hash.take(hashLength)}$snapshotSuffix"
               }
-              MillSuccess(s"$tag$distanceHash")
+              Result.Success(s"$tag$distanceHash")
             case untaggedRegex(hash) =>
-              if (isDirty) MillSuccess(uncommitted())
-              else MillSuccess(s"${hash.take(hashLength)}$snapshotSuffix")
-            case _ =>
-              val exception = new IllegalStateException(s"Unexpected git describe output: $description")
-              MillException(exception, new OuterStack(exception.getStackTrace.toIndexedSeq))
+              if (isDirty) Result.Success(uncommitted())
+              else Result.Success(s"${hash.take(hashLength)}$snapshotSuffix")
+            case _ => Result.Failure(s"Unexpected git describe output: $description")
           }
       }
     }
