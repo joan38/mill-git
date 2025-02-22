@@ -1,6 +1,6 @@
 package com.goyeau.mill.git
 
-import mill._
+import mill.*
 import mill.scalalib.PublishModule
 
 trait GitVersionedPublishModule extends PublishModule {
