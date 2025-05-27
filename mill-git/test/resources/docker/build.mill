@@ -1,5 +1,7 @@
-import $ivy.`com.goyeau::mill-git::0.2.6`
-import $ivy.`com.lihaoyi::mill-contrib-docker:$MILL_VERSION`
+//| repositories: [https://oss.sonatype.org/content/repositories/snapshots]
+//| mvnDeps:
+//| - com.goyeau::mill-git::0.2.7-18-d218ffa-SNAPSHOT
+//| - com.lihaoyi::mill-contrib-docker:$MILL_VERSION
 import com.goyeau.mill.git.GitTaggedDockerModule
 import mill._
 import mill.contrib.docker.DockerModule

@@ -1,11 +1,13 @@
-import $ivy.`com.goyeau::mill-git::0.2.6`
+//| repositories: [https://oss.sonatype.org/content/repositories/snapshots]
+//| mvnDeps:
+//| - com.goyeau::mill-git::0.2.7-18-d218ffa-SNAPSHOT
 import com.goyeau.mill.git.GitVersionModule
 import mill._
 import mill.scalalib.JavaModule
 import os._
 
 object project extends JavaModule {
-  def jobVersion = T(GitVersionModule.version()())
+  def jobVersion = Task(GitVersionModule.version()())
 }
 
 /** Usage

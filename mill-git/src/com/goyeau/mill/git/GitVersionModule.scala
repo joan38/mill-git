@@ -3,7 +3,6 @@ package com.goyeau.mill.git
 import mill.*
 import mill.Task.workspace
 import mill.api.Result
-import mill.define.Command
 import mill.define.Discover
 import mill.define.ExternalModule
 import org.eclipse.jgit.api.Git
