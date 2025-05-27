@@ -1,8 +1,11 @@
 package com.goyeau.mill.git
 
 import munit.FunSuite
+import scala.concurrent.duration.*
 
 class PublishProjectIntegrationTests extends FunSuite {
+  override val munitTimeout: Duration = 1.minute
+
   test("Uncommitted changes") {
     val tester = Tester.create(os.rel / "publish")
     val _      = os.proc("git", "init").call(cwd = tester.workspacePath)

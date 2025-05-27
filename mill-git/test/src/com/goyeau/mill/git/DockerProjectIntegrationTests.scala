@@ -1,8 +1,11 @@
 package com.goyeau.mill.git
 
 import munit.FunSuite
+import scala.concurrent.duration.*
 
 class DockerProjectIntegrationTests extends FunSuite {
+  override val munitTimeout: Duration = 1.minute
+
   test("Uncommitted changes") {
     val tester = Tester.create(os.rel / "docker")
     val _      = os.proc("git", "init").call(cwd = tester.workspacePath)
@@ -11,9 +14,9 @@ class DockerProjectIntegrationTests extends FunSuite {
     assert(result.isSuccess, result.err)
     assert(
       result.out.matches("""\[
-                         |  "project:[\da-f]{7}",
-                         |  "project:latest"
-                         |\]""".stripMargin),
+                           |  "project:[\da-f]{7}",
+                           |  "project:latest"
+                           |\]""".stripMargin),
       s"${result.out} is not an array with 7 chars hash and latest tags"
     )
   }
@@ -47,9 +50,9 @@ class DockerProjectIntegrationTests extends FunSuite {
     assert(result.isSuccess, result.err)
     assert(
       result.out.matches("""\[
-                         |  "project:[\da-f]{7}",
-                         |  "project:latest"
-                         |\]""".stripMargin),
+                           |  "project:[\da-f]{7}",
+                           |  "project:latest"
+                           |\]""".stripMargin),
       s"${result.out} is not a 7 chars hash"
     )
   }
@@ -84,9 +87,9 @@ class DockerProjectIntegrationTests extends FunSuite {
     assert(result.isSuccess, result.err)
     assert(
       result.out.matches("""\[
-                         |  "project:1\.0\.0-1-[\da-f]{7}",
-                         |  "project:latest"
-                         |\]""".stripMargin),
+                           |  "project:1\.0\.0-1-[\da-f]{7}",
+                           |  "project:latest"
+                           |\]""".stripMargin),
       s"${result.out} is not a version and distance from it, followed by a 7 chars hash"
     )
   }
@@ -107,9 +110,9 @@ class DockerProjectIntegrationTests extends FunSuite {
     assertEquals(
       result.out,
       s"""[
-        |  "project:1.0.0-1-$hash",
-        |  "project:latest"
-        |]""".stripMargin
+         |  "project:1.0.0-1-$hash",
+         |  "project:latest"
+         |]""".stripMargin
     )
   }
 
@@ -128,9 +131,9 @@ class DockerProjectIntegrationTests extends FunSuite {
     assert(result.isSuccess, result.err)
     assert(
       result.out.matches("""\[
-                         |  "project:1\.0\.0-2-[\da-f]{7}",
-                         |  "project:latest"
-                         |\]""".stripMargin),
+                           |  "project:1\.0\.0-2-[\da-f]{7}",
+                           |  "project:latest"
+                           |\]""".stripMargin),
       s"${result.out} is not a version and distance from it, followed by a 7 chars hash"
     )
   }
