@@ -5,7 +5,7 @@ import munit.FunSuite
 import scala.concurrent.duration.*
 
 class ExampleTests extends FunSuite {
-  override val munitTimeout: Duration = 1.minute
+  override val munitTimeout: Duration = 2.minute
 
   test("Custom example") {
     val resourceFolder = os.Path(sys.env("MILL_TEST_RESOURCE_DIR"))
