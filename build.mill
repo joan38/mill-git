@@ -1,6 +1,8 @@
 //| mill-version: 1.0.1-native
 //| mill-jvm-version: 20
-//| repositories: [https://oss.sonatype.org/content/repositories/snapshots]
+//| repositories:
+//| - https://central.sonatype.com/repository/maven-snapshots
+//| - https://oss.sonatype.org/content/repositories/snapshots
 //| mvnDeps:
 //| - com.goyeau::mill-git::0.3.0
 //| - com.goyeau::mill-scalafix::0.6.0
