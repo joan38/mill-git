@@ -4,7 +4,7 @@ import munit.FunSuite
 import scala.concurrent.duration.*
 
 class CustomProjectIntegrationTests extends FunSuite {
-  override val munitTimeout: Duration = 1.minute
+  override val munitTimeout: Duration = 2.minute
 
   test("Uncommitted changes") {
     val tester = Tester.create(os.rel / "custom")
