@@ -15,8 +15,12 @@ import org.typelevel.scalacoptions.ScalacOptions.*
 import org.typelevel.scalacoptions.{ScalaVersion, ScalacOptions}
 
 object `mill-git` extends Cross[MillGitCross]("1.0.0")
-trait MillGitCross extends Cross.Module[String] with StyleModule with GitVersionedPublishModule:
-  val millVersion = crossValue
+trait MillGitCross
+    extends Cross.Module[String]
+    with StyleModule
+    with GitVersionedPublishModule
+    with SonatypeCentralPublishModule:
+  val millVersion           = crossValue
   override def scalaVersion = "3.7.1"
   override def scalacOptions = super.scalacOptions() ++ ScalacOptions.tokensForVersion(
     ScalaVersion.unsafeFromString(scalaVersion()),
