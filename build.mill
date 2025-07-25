@@ -8,37 +8,25 @@
 import com.goyeau.mill.git.{GitVersionModule, GitVersionedPublishModule}
 import com.goyeau.mill.scalafix.StyleModule
 import mill.*
-import mill.Task.dest
 import mill.define.Cross
 import mill.scalalib.*
 import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
 import org.typelevel.scalacoptions.ScalacOptions.*
 import org.typelevel.scalacoptions.{ScalaVersion, ScalacOptions}
 
-object `mill-git` extends Cross[MillGitCross]("1.0.0-RC1", "0.12.0")
+object `mill-git` extends Cross[MillGitCross]("1.0.0")
 trait MillGitCross extends Cross.Module[String] with StyleModule with GitVersionedPublishModule:
   val millVersion = crossValue
-  override def scalaVersion = millVersion match
-    case millVersion if millVersion.startsWith("0.12") => "2.13.16"
-    case millVersion if millVersion.startsWith("1.0")  => "3.7.0"
+  override def scalaVersion = "3.7.1"
   override def scalacOptions = super.scalacOptions() ++ ScalacOptions.tokensForVersion(
     ScalaVersion.unsafeFromString(scalaVersion()),
-    ScalacOptions.default + source3 // ++ fatalWarningOptions Reenable this once we drop support for Scala 2/0.12.x
+    ScalacOptions.default + source3 ++ fatalWarningOptions
   )
 
-  override def compileMvnDeps = super.compileMvnDeps() ++ (millVersion match
-    case version if version.startsWith("1.0") =>
-      Seq(
-        mvn"com.lihaoyi::mill-libs-main:$millVersion",
-        mvn"com.lihaoyi::mill-libs-scalalib-api:$millVersion",
-        mvn"com.lihaoyi::mill-contrib-docker:$millVersion"
-      )
-    case _ =>
-      Seq(
-        mvn"com.lihaoyi::mill-main:$millVersion",
-        mvn"com.lihaoyi::mill-scalalib:$millVersion",
-        mvn"com.lihaoyi::mill-contrib-docker:$millVersion"
-      ))
+  override def compileMvnDeps = super.compileMvnDeps() ++ Seq(
+    mvn"com.lihaoyi::mill-libs-scalalib:$millVersion",
+    mvn"com.lihaoyi::mill-contrib-docker:$millVersion"
+  )
   override def mvnDeps = super.mvnDeps() ++ Seq(mvn"org.eclipse.jgit:org.eclipse.jgit:7.1.0.202411261347-r")
 
   object test extends ScalaTests with TestModule.Munit:

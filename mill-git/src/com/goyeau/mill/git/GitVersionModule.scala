@@ -1,10 +1,10 @@
 package com.goyeau.mill.git
 
 import mill.*
-import mill.Task.workspace
+import mill.api.BuildCtx.workspaceRoot
+import mill.api.Discover
+import mill.api.ExternalModule
 import mill.api.Result
-import mill.define.Discover
-import mill.define.ExternalModule
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.RepositoryBuilder
 import os.*
@@ -19,7 +19,7 @@ object GitVersionModule extends ExternalModule {
     */
   def version(hashLength: Int = 7, withSnapshotSuffix: Boolean = false): Command[String] =
     Task.Command {
-      val git            = Git.open(workspace.toIO)
+      val git            = Git.open(workspaceRoot.toIO)
       val status         = git.status().call()
       val isDirty        = status.hasUncommittedChanges || !status.getUntracked.isEmpty
       val snapshotSuffix = if (withSnapshotSuffix) "-SNAPSHOT" else ""
