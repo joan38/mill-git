@@ -1,6 +1,6 @@
 //| repositories: [https://oss.sonatype.org/content/repositories/snapshots]
 //| mvnDeps:
-//| - com.goyeau::mill-git::0.2.7-18-d218ffa-SNAPSHOT
+//| - com.goyeau::mill-git::0.3.0
 import com.goyeau.mill.git.GitVersionedPublishModule
 import mill._
 import mill.scalalib.JavaModule
