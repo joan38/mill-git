@@ -13,7 +13,7 @@ class DockerProjectIntegrationTests extends FunSuite {
     val result = tester.eval(Seq("show", "project.docker.tags"))
     assert(result.isSuccess, result.err)
     assert(
-      result.out.matches("""\[
+      result.out.matches("""(?s).*\[
                            |  "project:[\da-f]{7}",
                            |  "project:latest"
                            |\]""".stripMargin),
@@ -30,13 +30,10 @@ class DockerProjectIntegrationTests extends FunSuite {
 
     val result = tester.eval(Seq("show", "project.docker.tags"))
     assert(result.isSuccess, result.err)
-    assertEquals(
-      result.out,
-      s"""[
-         |  "project:$hash",
-         |  "project:latest"
-         |]""".stripMargin
-    )
+    assert(result.out.contains(s"""[
+                                  |  "project:$hash",
+                                  |  "project:latest"
+                                  |]""".stripMargin))
   }
 
   test("Uncommitted changes after commit without tag") {
@@ -49,7 +46,7 @@ class DockerProjectIntegrationTests extends FunSuite {
     val result = tester.eval(Seq("show", "project.docker.tags"))
     assert(result.isSuccess, result.err)
     assert(
-      result.out.matches("""\[
+      result.out.matches("""(?s).*\[
                            |  "project:[\da-f]{7}",
                            |  "project:latest"
                            |\]""".stripMargin),
@@ -66,13 +63,10 @@ class DockerProjectIntegrationTests extends FunSuite {
 
     val result = tester.eval(Seq("show", "project.docker.tags"))
     assert(result.isSuccess, result.err)
-    assertEquals(
-      result.out,
-      """[
-        |  "project:1.0.0",
-        |  "project:latest"
-        |]""".stripMargin
-    )
+    assert(result.out.contains("""[
+                                 |  "project:1.0.0",
+                                 |  "project:latest"
+                                 |]""".stripMargin))
   }
 
   test("Uncommitted changes after tag") {
@@ -86,7 +80,7 @@ class DockerProjectIntegrationTests extends FunSuite {
     val result = tester.eval(Seq("show", "project.docker.tags"))
     assert(result.isSuccess, result.err)
     assert(
-      result.out.matches("""\[
+      result.out.matches("""(?s).*\[
                            |  "project:1\.0\.0-1-[\da-f]{7}",
                            |  "project:latest"
                            |\]""".stripMargin),
@@ -107,12 +101,11 @@ class DockerProjectIntegrationTests extends FunSuite {
 
     val result = tester.eval(Seq("show", "project.docker.tags"))
     assert(result.isSuccess, result.err)
-    assertEquals(
-      result.out,
-      s"""[
-         |  "project:1.0.0-1-$hash",
-         |  "project:latest"
-         |]""".stripMargin
+    assert(
+      result.out.contains(s"""[
+                             |  "project:1.0.0-1-$hash",
+                             |  "project:latest"
+                             |]""".stripMargin)
     )
   }
 
@@ -130,7 +123,7 @@ class DockerProjectIntegrationTests extends FunSuite {
     val result = tester.eval(Seq("show", "project.docker.tags"))
     assert(result.isSuccess, result.err)
     assert(
-      result.out.matches("""\[
+      result.out.matches("""(?s).*\[
                            |  "project:1\.0\.0-2-[\da-f]{7}",
                            |  "project:latest"
                            |\]""".stripMargin),

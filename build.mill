@@ -1,5 +1,5 @@
 //| mill-version: 1.0.1-native
-//| mill-jvm-version: 20
+//| mill-jvm-version: 17
 //| repositories:
 //| - https://central.sonatype.com/repository/maven-snapshots
 //| - https://oss.sonatype.org/content/repositories/snapshots
@@ -7,6 +7,7 @@
 //| - com.goyeau::mill-git::0.3.0
 //| - com.goyeau::mill-scalafix::0.6.0
 //| - org.typelevel::scalac-options:0.1.7
+
 import com.goyeau.mill.git.{GitVersionModule, GitVersionedPublishModule}
 import com.goyeau.mill.scalafix.StyleModule
 import mill.*
