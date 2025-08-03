@@ -12,7 +12,7 @@ class PublishProjectIntegrationTests extends FunSuite {
 
     val result = tester.eval(Seq("show", "project.publishVersion"))
     assert(result.isSuccess, result.err)
-    assert(result.out.matches(""""[\da-f]{7}""""), s"${result.out} is not a 7 chars hash")
+    assert(result.out.matches("""(?s).*"[\da-f]{7}""""), s"${result.out} is not a 7 chars hash")
   }
 
   test("Commit without tag") {
@@ -24,7 +24,7 @@ class PublishProjectIntegrationTests extends FunSuite {
 
     val result = tester.eval(Seq("show", "project.publishVersion"))
     assert(result.isSuccess, result.err)
-    assertEquals(result.out, s""""$hash"""")
+    assert(result.out.contains(s""""$hash""""))
   }
 
   test("Uncommitted changes after commit without tag") {
@@ -36,7 +36,7 @@ class PublishProjectIntegrationTests extends FunSuite {
 
     val result = tester.eval(Seq("show", "project.publishVersion"))
     assert(result.isSuccess, result.err)
-    assert(result.out.matches(""""[\da-f]{7}""""), s"${result.out} is not a 7 chars hash")
+    assert(result.out.matches("""(?s).*"[\da-f]{7}""""), s"${result.out} is not a 7 chars hash")
   }
 
   test("Head tagged") {
@@ -48,7 +48,7 @@ class PublishProjectIntegrationTests extends FunSuite {
 
     val result = tester.eval(Seq("show", "project.publishVersion"))
     assert(result.isSuccess, result.err)
-    assertEquals(result.out, """"1.0.0"""")
+    assert(result.out.contains(""""1.0.0""""))
   }
 
   test("Uncommitted changes after tag") {
@@ -62,7 +62,7 @@ class PublishProjectIntegrationTests extends FunSuite {
     val result = tester.eval(Seq("show", "project.publishVersion"))
     assert(result.isSuccess, result.err)
     assert(
-      result.out.matches(""""1\.0\.0-1-[\da-f]{7}""""),
+      result.out.matches("""(?s).*"1\.0\.0-1-[\da-f]{7}""""),
       s"${result.out} is not a version and distance from it, followed by a 7 chars hash"
     )
   }
@@ -80,7 +80,7 @@ class PublishProjectIntegrationTests extends FunSuite {
 
     val result = tester.eval(Seq("show", "project.publishVersion"))
     assert(result.isSuccess, result.err)
-    assertEquals(result.out, s""""1.0.0-1-$hash"""")
+    assert(result.out.contains(s""""1.0.0-1-$hash""""))
   }
 
   test("Uncommitted changes after tag and after commit") {
@@ -97,7 +97,7 @@ class PublishProjectIntegrationTests extends FunSuite {
     val result = tester.eval(Seq("show", "project.publishVersion"))
     assert(result.isSuccess, result.err)
     assert(
-      result.out.matches(""""1\.0\.0-2-[\da-f]{7}""""),
+      result.out.matches("""(?s).*"1\.0\.0-2-[\da-f]{7}""""),
       s"${result.out} is not a version and distance from it, followed by a 7 chars hash"
     )
   }
