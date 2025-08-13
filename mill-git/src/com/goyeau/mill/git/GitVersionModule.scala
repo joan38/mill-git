@@ -17,9 +17,13 @@ object GitVersionModule extends ExternalModule {
 
   /** Version derived from git.
     */
-  def version(hashLength: Int = 7, withSnapshotSuffix: Boolean = false): Command[String] =
+  def version(
+      hashLength: Int = 7,
+      withSnapshotSuffix: Boolean = false,
+      gitRoot: Path = workspaceRoot
+  ): Command[String] =
     Task.Command {
-      val git            = Git.open(workspaceRoot.toIO)
+      val git            = Git.open(gitRoot.toIO)
       val status         = git.status().call()
       val isDirty        = status.hasUncommittedChanges || !status.getUntracked.isEmpty
       val snapshotSuffix = if (withSnapshotSuffix) "-SNAPSHOT" else ""
