@@ -2,9 +2,10 @@ package com.goyeau.mill.git
 
 import mill.testkit.ExampleTester
 import munit.FunSuite
+
 import scala.concurrent.duration.*
 
-class ExampleTests extends FunSuite {
+class ExampleTests extends FunSuite:
   override val munitTimeout: Duration = 2.minute
 
   test("Custom example") {
@@ -15,4 +16,3 @@ class ExampleTests extends FunSuite {
       millExecutable = os.Path(sys.env("MILL_EXECUTABLE_PATH"))
     )
   }
-}
