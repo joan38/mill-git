@@ -1,6 +1,6 @@
 # mill-git
 
-![Maven Central](https://img.shields.io/maven-central/v/com.goyeau/mill-git_mill0.11_2.13)
+![Maven Central](https://img.shields.io/maven-central/v/com.goyeau/mill-git_mill1_3)
 
 A git version plugin for Mill build tool.
 
@@ -15,14 +15,17 @@ A git version plugin for Mill build tool.
 
 ### With PublishModule
 
-*build.sc*:
+*build.mill*:
 ```scala
-import $ivy.`com.goyeau::mill-git::<latest version>`
+//| mill-version: 1.0.6-native
+//| mvnDeps:
+//| - com.goyeau::mill-git::<latest version>
+
 import com.goyeau.mill.git.GitVersionedPublishModule
 import mill.scalalib.JavaModule
 import mill.scalalib.publish.{Developer, License, PomSettings, VersionControl}
 
-object `jvm-project` extends JavaModule with GitVersionedPublishModule {
+object `jvm-project` extends JavaModule with GitVersionedPublishModule:
   override def pomSettings = PomSettings(
     description = "JVM Project",
     organization = "com.goyeau",
@@ -31,7 +34,6 @@ object `jvm-project` extends JavaModule with GitVersionedPublishModule {
     versionControl = VersionControl.github("joan38", "mill-git"),
     developers = Seq(Developer("joan38", "Joan Goyeau", "https://github.com/joan38"))
   )
-}
 ```
 
 ```shell script
@@ -43,9 +45,12 @@ object `jvm-project` extends JavaModule with GitVersionedPublishModule {
 
 ### With DockerModule
 
-*build.sc*:
+*build.mill*:
 ```scala
-import $ivy.`com.goyeau::mill-git::<latest version>`
+//| mill-version: 1.0.6-native
+//| mvnDeps:
+//| - com.goyeau::mill-git::<latest version>
+
 import com.goyeau.mill.git.GitTaggedDockerModule
 import mill.scalalib.JavaModule
 
@@ -69,9 +74,12 @@ object `docker-project` extends JavaModule with GitTaggedDockerModule {
 ### Custom options
 
 Here is a custom configuration with the default option:
-*build.sc*:
+*build.mill*:
 ```scala
-import $ivy.`com.goyeau::mill-git::<latest version>`
+//| mill-version: 1.0.6-native
+//| mvnDeps:
+//| - com.goyeau::mill-git::<latest version>
+
 import com.goyeau.mill.git.GitVersionModule
 import mill.scalalib.JavaModule
 
