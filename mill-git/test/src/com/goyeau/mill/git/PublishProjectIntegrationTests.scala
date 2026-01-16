@@ -1,9 +1,10 @@
 package com.goyeau.mill.git
 
 import munit.FunSuite
+
 import scala.concurrent.duration.*
 
-class PublishProjectIntegrationTests extends FunSuite {
+class PublishProjectIntegrationTests extends FunSuite:
   override val munitTimeout: Duration = 2.minute
 
   test("Uncommitted changes") {
@@ -101,4 +102,3 @@ class PublishProjectIntegrationTests extends FunSuite {
       s"${result.out} is not a version and distance from it, followed by a 7 chars hash"
     )
   }
-}

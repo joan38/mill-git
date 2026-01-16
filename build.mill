@@ -1,10 +1,10 @@
-//| mill-version: 1.0.1-native
+//| mill-version: 1.0.6-native
 //| mill-jvm-version: 17
 //| repositories:
 //| - https://central.sonatype.com/repository/maven-snapshots
 //| - https://oss.sonatype.org/content/repositories/snapshots
 //| mvnDeps:
-//| - com.goyeau::mill-git::0.3.0
+//| - com.goyeau::mill-git::0.3.2
 //| - com.goyeau::mill-scalafix::0.6.0
 //| - org.typelevel::scalac-options:0.1.7
 
@@ -24,7 +24,7 @@ trait MillGitCross
     with GitVersionedPublishModule
     with SonatypeCentralPublishModule:
   val millVersion           = crossValue
-  override def scalaVersion = "3.7.1"
+  override def scalaVersion = "3.7.4"
   override def scalacOptions = super.scalacOptions() ++ ScalacOptions.tokensForVersion(
     ScalaVersion.unsafeFromString(scalaVersion()),
     ScalacOptions.default + source3 ++ fatalWarningOptions
@@ -34,20 +34,18 @@ trait MillGitCross
     mvn"com.lihaoyi::mill-libs-scalalib:$millVersion",
     mvn"com.lihaoyi::mill-contrib-docker:$millVersion"
   )
-  override def mvnDeps = super.mvnDeps() ++ Seq(mvn"org.eclipse.jgit:org.eclipse.jgit:7.1.0.202411261347-r")
+  override def mvnDeps = super.mvnDeps() ++ Seq(mvn"org.eclipse.jgit:org.eclipse.jgit:7.5.0.202512021534-r")
 
-  object test extends ScalaTests with TestModule.Munit:
+  object test extends ScalaTests with TestModule.Munit with StyleModule:
     override def mvnDeps = Seq(
-      mvn"org.scalameta::munit::1.1.0",
+      mvn"org.scalameta::munit::1.2.1",
       mvn"com.lihaoyi::mill-testkit:$millVersion"
     )
     override def forkEnv = Map("MILL_EXECUTABLE_PATH" -> millExecutable.assembly().path.toString)
 
     // Create a Mill executable configured for testing our plugin
     object millExecutable extends JavaModule:
-      override def mvnDeps = millVersion match
-        case version if version.startsWith("1.0") => Seq(mvn"com.lihaoyi:mill-runner-launcher_3:$millVersion")
-        case _                                    => Seq(mvn"com.lihaoyi:mill-dist:$millVersion")
+      override def mvnDeps   = Seq(mvn"com.lihaoyi:mill-runner-launcher_3:$millVersion")
       override def mainClass = Some("mill.launcher.MillLauncherMain")
   end test
 
@@ -65,5 +63,5 @@ end MillGitCross
 
 def millBinaryVersion(millVersion: String) = millVersion match
   case version if version.startsWith("0.12") => "0.11" // 0.12.x is binary compatible with 0.11.x
-  case version if version.startsWith("1.0")  => "1"
+  case version if version.startsWith("1.")   => "1"
   case _ => throw IllegalArgumentException(s"Unsupported Mill version: $millVersion")
