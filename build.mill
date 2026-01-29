@@ -23,8 +23,8 @@ trait MillGitCross
     with StyleModule
     with GitVersionedPublishModule
     with SonatypeCentralPublishModule:
-  val millVersion           = crossValue
-  override def scalaVersion = "3.7.4"
+  val millVersion            = crossValue
+  override def scalaVersion  = "3.7.4"
   override def scalacOptions = super.scalacOptions() ++ ScalacOptions.tokensForVersion(
     ScalaVersion.unsafeFromString(scalaVersion()),
     ScalacOptions.default + source3 ++ fatalWarningOptions
@@ -51,7 +51,7 @@ trait MillGitCross
 
   override def artifactName   = s"mill-git_mill${millBinaryVersion(millVersion)}"
   override def publishVersion = GitVersionModule.version(withSnapshotSuffix = true)()
-  def pomSettings = PomSettings(
+  def pomSettings             = PomSettings(
     description = "A git version plugin for Mill build tool",
     organization = "com.goyeau",
     url = "https://github.com/joan38/mill-git",
