@@ -34,7 +34,7 @@ trait MillGitCross
     mvn"com.lihaoyi::mill-libs-scalalib:$millVersion",
     mvn"com.lihaoyi::mill-contrib-docker:$millVersion"
   )
-  override def mvnDeps = super.mvnDeps() ++ Seq(mvn"org.eclipse.jgit:org.eclipse.jgit:7.7.0.202606012155-r")
+  override def mvnDeps = super.mvnDeps() ++ Seq(mvn"org.eclipse.jgit:org.eclipse.jgit:7.7.1.202607240634-r")
 
   object test extends ScalaTests with TestModule.Munit with StyleModule:
     override def mvnDeps = Seq(
