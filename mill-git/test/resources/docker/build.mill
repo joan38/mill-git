@@ -3,13 +3,11 @@
 //| - com.goyeau::mill-git::0.3.0
 //| - com.lihaoyi::mill-contrib-docker:$MILL_VERSION
 import com.goyeau.mill.git.GitTaggedDockerModule
-import mill._
+import mill.*
 import mill.contrib.docker.DockerModule
 import mill.scalalib.JavaModule
-import os._
+import os.*
 
-object project extends JavaModule with GitTaggedDockerModule {
-  object docker extends DockerConfig with GitTaggedDocker {
+object project extends JavaModule with GitTaggedDockerModule:
+  object docker extends DockerConfig with GitTaggedDocker:
     override def tagLatest = true // Default is false
-  }
-}
